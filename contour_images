@@ -1,0 +1,28 @@
+# Find Contours
+import cv2
+import numpy as np
+
+# using HSV to segment out objects
+img = cv2.imread('detect_blob.png',1) 
+hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+
+lower_blue = np.array([100,50,50])
+upper_blue = np.array([130,255,255])
+
+# Threshold to segment out blue square
+thresh = cv2.inRange(hsv, lower_blue, upper_blue)
+cv2.imshow("Thresh",thresh)
+
+# Find contours
+thresh,contours, hierarchy = cv2.findContours(thresh,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)
+#cv2.drawContours(img, contours, -1, (0,0,255), 2)
+
+# Find and Draw boundings
+for i in range(len(contours)):
+    x, y, w, h = cv2.boundingRect(contours[i])
+    cv2.rectangle(img, (x, y), (x+w, y+h), (0, 0, 255), 2)
+    print("Object", i, "(x,y):", x+w//2, y+h//2)
+
+cv2.imshow("Original",img)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
