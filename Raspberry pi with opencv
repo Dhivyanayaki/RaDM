@@ -1,0 +1,32 @@
+# Video capture
+import cv2
+
+#create video object
+cap = cv2.VideoCapture(0) #0 index means built-in cam 
+
+boxW=250
+boxH=250
+
+while(True):
+    # capture frame-by-frame
+    ret, frame = cap.read() 
+
+    h=frame.shape[0]
+    w=frame.shape[1]
+    w1=(w-boxW)//2
+    h1=(h-boxH)//2
+
+    # process frame box
+    box=frame[h1:(h1+boxH),w1:(w1+boxW)]
+    blur = cv2.GaussianBlur(box, (55,55),0)
+    frame[h1:(h1+boxH),w1:(w1+boxW)]=blur
+
+    #show frame
+    cv2.imshow("Frame",frame)
+
+    #wait for 1ms to see if 'q' entered
+    ch = cv2.waitKey(1)
+    if chr(ch&0xff)=='q': break
+
+cap.release()
+cv2.destroyAllWindows()
